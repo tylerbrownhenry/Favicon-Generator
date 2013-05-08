@@ -64,6 +64,18 @@ settings.changeColor = (function(c){
     return settings.color;    
 });
 
+settings.useTool = (function(c){
+    settings.color = c;
+    return settings.color;    
+
+    if(settings.tool === 'eyedropper'){
+        eyeDropThis(target);
+    } else {
+        
+    }
+
+});
+
 // settings.brush.darkenAmount = (function(n){
 //     settings.darken = n * settings.brush.darken.que;
 //     return settings.darken;    

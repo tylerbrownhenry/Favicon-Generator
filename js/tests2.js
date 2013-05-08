@@ -1,8 +1,4 @@
-
-
-
 //TODO:
-// Fix size 1 for pencil
 // Fix Darken Colors
 // Resize hover state properly
 // Add Color Selection
@@ -56,38 +52,11 @@ jQuery.fn.setBorderRadius = function(size) {
 
 };
 
-//#-------------->
 
-settings = {offSet:60,pixelSize:16,darken:6,tool:'pencil',color:'#ffffff',change:false,density:.51,opacity:.51};
-settings.brush = {size:4,shape:'square',darken: {que:0},hardness:1};
+
 
 //#--------------->
 
-settings.brush.changeSize = function(size){
-    // We can add an if statment and make the function check each time if the 
-    // tool has changed when we click it.
-    var size = parseInt(size);
-    settings.brush.size = size;
-
-    $('#cursor').setBorderRadius(size * settings.pixelSize);
-    
-    if(settings.brush.shape === 'circle'){
-
-      var add = 0;
-      settings.offSet = ((size * settings.pixelSize)/2) + 10;
-
-    } else {
-
-        var add = ((size % 2) === 1)? 0 : 1; // Even & Odd Numbers Need to be Treated Differently
-        settings.offSet = (size % 2 === 1)? (((size+1) * settings.pixelSize)/2) + 1 : ((size * settings.pixelSize)/2) + 1;
-        settings.offSet = (size === 1)? 10 : settings.offSet;
-
-    };
-
-    this.remove  = Math.floor(size/2); 
-    this.add  = ((this.remove)*-1)+add;
-    
-};
 
 settings.changeColor = (function(c){
 
@@ -96,37 +65,22 @@ settings.changeColor = (function(c){
 
 });
 
+settings.useTool = (function(c){
+
+    if(settings.tool === 'eyedropper'){
+
+        eyeDropThis(target);
+
+    } else {
+
+        useCurrentTool();
+
+    };
+
+});
+
 settings.brush.changeSize($('.brushSize').val());
 
-// 0 is hard, 1, 2,... softer
-//#------> Changes
-//
-
-// settings.brush.darkenAmount = (function(n){
-//     settings.darken = n * settings.brush.darken.que;
-//     return settings.darken;    
-// });
-
-
-// function averageOfColors(color1,color1){
-
-// function calc(x,y){
-// var average=((x+y)/2).toFixed(2)
-// alert(average)
-// }
-// onload=function(){calc(8,7)}
-// };
-
-//#-------->
-
-var difference = function (a, b, d) { 
-
-    var diff = Math.abs(a - b); 
-    return parseInt(diff * (settings.density + settings.opacity) * d);
-
-};
-
-//#-------->
 
 function cvtRGBtoHex(color,newDepth){
 
@@ -157,192 +111,19 @@ function cvtRGBtoHex(color,newDepth){
 
 //#-------->
 
-function brushDabRadius(x, y, cx, cy, r, returnVal) {
-
-    var dx = x-cx
-    var dy = y-cy
-
-    if(typeof returnVal == 'undefined'){
-
-      return dx*dx+dy*dy <= r*r //true/false   
-
-    } else {
-
-      return dx*dx+dy*dy;
-
-    }
-
-// return dx*dx+dy*dy+'|'+r*r; // gives the numbers compared
-//can find some 'fuzzy' math to round the corners?
-};
-
-//#-------->
-
-
-function cleanColorInput(color){
-
-    if(color.indexOf('#') !== -1){
-       var color = color.substring(1,color.length); /// #ffffff ====> ffffff
-    };
-
-    var color = cvtRGBtoHex(color); ///rgb('255,255,255') ====> ffffff
-    var color = color.split("");
-
-    return color;
-};
 
 
 //#-------------> 
 
-var convertNum = (function convertNum(brushColor){
-
-    var color = cleanColorInput(brushColor);
-
-    darkenColor = new Array();
-    var change = 0; // Was darken variable.
-    
-    for(var i=5; color.length > 1;i--){
-      
-      var num = '';
-
-      //Darken will be added here... as 'change';
-      num = ((parseInt(color.shift(),16)*16)+(parseInt(color.shift(),16)) - change);
-      
-      num = num.toString(16);
-
-      if(num.indexOf('-') !== -1){
-
-          num = '00';
-
-      }; 
-          
-      num = (num.length == 1)? 0 + num : num;
-
-      darkenColor.push(num);
-
-    };
-
-    return "#"+darkenColor.join('');
-
-}).memoize();
-
-
-
-
-
-
-//#--------------------->
-
-function createDivs(){
-    
-    appendToDivs = '';
-    
-    for(i=0,r=1,e=1;i < (32*32);i++){
-       
-        if(e == 33){
-
-            e=1;
-            r++
-
-        };
-
-        appendToDivs += '<div x='+e+'  y='+r+' class="pixel" style="background-color:#ff3333"></div>';
-        e++
-
-    };
-    
-    $('.e').html('<div id="cursor" class="square"></div>'+appendToDivs);
-
-};
-
-//createDivs();
-//#--------------------->
-
-
-
-
-function useCurrentTool(target){
-
-    var x = parseInt(settings.X),
-    y = parseInt(settings.Y);    
-   
-//#------------> Eye Dropper Tool
+function eyeDropThis(){
     if(settings.tool === 'eyedropper'){
 
-        settings.color = "#"+cvtRGBtoHex($('.pixel[x='+x+'][y='+y+']').css('backgroundColor')); 
+        settings.color = "#"+cvtRGBtoHex($('.pixel[x='+settings.X+'][y='+settings.Y+']').css('backgroundColor')); 
         $('#eyedropper').css('backgroundColor',settings.color); 
         return;
 
     };
-
-//#------------> Finds the pixels that will be affected by the brush
-    coord = [];
-    coord.maxX = parseInt(x+settings.brush.add);
-    coord.minX = parseInt(x+settings.brush.remove);
-    
-    coord.minY = parseInt(y+settings.brush.remove);
-    coord.maxY = parseInt(y+settings.brush.add);
-    
-    for (var key in coord) {
-
-       var obj = coord[key];
-       if(obj < 1){ coord[key] = 1;};
-       if(obj > 32){ coord[key] = 32;};
-
-    };
-        
-//#------------> Drawing Tools
-  for(var e=coord.maxY;e < coord.minY + 1; e++){
-    for(var i=coord.maxX;i < coord.minX + 1; i++){
-
-      var blurLevel = 'notSet';
-      var test = false;
-        
-      var pixel = $('.pixel[x='+i+'][y='+e+']'); 
-
-      if(settings.tool !== 'pen'){
-
-        var hitTest = true;
-
-      } else {
-
-        var hitTest = brushDabRadius(i, e, x, y, (settings.brush.size/2));
-
-        for (var g = 0; g < 10; g++) {
-
-          var test = brushDabRadius(i, e, x, y, (settings.brush.size/2)-g);
-
-          if(test){
-
-            blurLevel = g;
-       
-          };
-
-        };
-
-      };
-      
-      if(settings.change === true && hitTest === true){
-
-        var color = pixel.css('backgroundColor');               
-        pixel.css('backgroundColor',convertNum(color)).attr('name',blurLevel);
-
-      };
-       
-      if(settings.change === false && hitTest === true){
-        if((settings.tool === 'pencil') || (settings.tool === 'pen')){    
-
-          pixel.css('backgroundColor',settings.color);
-
-        };
-      };
-    };
-  };
 };
-
-
-
-
 
 
 
@@ -368,13 +149,8 @@ $('.darkenAmount').change(function() {
 //#------> Clicks
 
 
-
-
-
-
-
 $('.tool,.brushSize').click(function(){
-console.log('ghfgh');    
+ 
     var thisId = $(this).attr('id');
     settings.tool = thisId;
     
@@ -417,8 +193,8 @@ $('#eyedropper').click(function(){
 
 $("body").mousemove(function(e) {
 
-    settings.X = Math.ceil((e.pageX - $('.e').offset().left)/settings.pixelSize);
-    settings.Y = Math.ceil((e.pageY - $('.e').offset().top)/settings.pixelSize);
+    settings.X = parseInt(Math.ceil((e.pageX - $('.jcrop-holder').offset().left)/settings.pixelSize));
+    settings.Y = parseInt(Math.ceil((e.pageY - $('.jcrop-holder').offset().top)/settings.pixelSize));
     
     settings.hoverCursorX = ((settings.X * settings.pixelSize) - settings.offSet )+'px';
     settings.hoverCursorY = ((settings.Y * settings.pixelSize) - settings.offSet )+'px';
@@ -431,6 +207,21 @@ $("body").mousemove(function(e) {
 
 
 
+
+
+
+
+
+//EXILED FOR NOW
+//EXILED FOR NOW
+//EXILED FOR NOW
+//EXILED FOR NOW
+//EXILED FOR NOW
+//EXILED FOR NOW
+//EXILED FOR NOW
+//EXILED FOR NOW
+//EXILED FOR NOW
+//EXILED FOR NOW
 
 
 
@@ -451,3 +242,95 @@ $("body").mousemove(function(e) {
         };
 
 
+
+
+// 0 is hard, 1, 2,... softer
+//#------> Changes
+//
+
+// settings.brush.darkenAmount = (function(n){
+//     settings.darken = n * settings.brush.darken.que;
+//     return settings.darken;    
+// });
+
+
+// function averageOfColors(color1,color1){
+
+// function calc(x,y){
+// var average=((x+y)/2).toFixed(2)
+// alert(average)
+// }
+// onload=function(){calc(8,7)}
+// };
+
+//#-------->
+
+// var difference = function (a, b, d) { 
+
+//     var diff = Math.abs(a - b); 
+//     return parseInt(diff * (settings.density + settings.opacity) * d);
+
+// };
+
+//#-------->
+
+function cleanColorInput(color){
+
+    if(color.indexOf('#') !== -1){
+       var color = color.substring(1,color.length); /// #ffffff ====> ffffff
+    };
+
+    var color = cvtRGBtoHex(color); ///rgb('255,255,255') ====> ffffff
+    var color = color.split("");
+
+    return color;
+};
+
+
+var convertNum = (function convertNum(brushColor){
+
+    var color = cleanColorInput(brushColor);
+
+    darkenColor = new Array();
+    var change = 0; // Was darken variable.
+    
+    for(var i=5; color.length > 1;i--){
+      
+      var num = '';
+
+      //Darken will be added here... as 'change';
+      num = ((parseInt(color.shift(),16)*16)+(parseInt(color.shift(),16)) - change);
+      
+      num = num.toString(16);
+
+      if(num.indexOf('-') !== -1){
+
+          num = '00';
+
+      }; 
+          
+      num = (num.length == 1)? 0 + num : num;
+
+      darkenColor.push(num);
+
+    };
+
+    return "#"+darkenColor.join('');
+
+}).memoize();
+
+
+
+function ohButHowBlurry(i,e,x,y){
+//to be continued...
+  for (var g = 0; g < 10; g++) {
+
+    var test = brushDabRadius(i, e, x, y, (settings.brush.size/2)-g);
+
+    if(test){
+
+      blurLevel = g;
+ 
+    };
+  };
+};

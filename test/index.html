@@ -178,7 +178,10 @@
 </style>
 <style>
 	
-.e{
+
+
+
+.e,.jcrop-holder{
     border:1px solid #ccc;
     position: relative;
     overflow:hidden;
@@ -356,13 +359,13 @@ canvas:hover {
 
 
   <div class="288Holder">
-    <canvas id="myCanvas288" width="288px" height="288px"></canvas>
-    <canvas id="myCanvas144" width="144px" height="144px"></canvas>
-    <canvas id="myCanvas114" width="114px" height="114px"></canvas>
-    <canvas id="myCanvas72" width="72px" height="72px"></canvas>
-    <canvas id="myCanvas57" width="57px" height="57px"></canvas>
-    <canvas id="myCanvas32" width="32px" height="32px"></canvas>
-    <canvas id="myCanvas16" width="16px" height="16px"></canvas>
+    <canvas sz="288" id="myCanvas288" width="288px" height="288px"></canvas>
+    <canvas sz="144" id="myCanvas144" width="144px" height="144px"></canvas>
+    <canvas sz="114" id="myCanvas114" width="114px" height="114px"></canvas>
+    <canvas sz="72" id="myCanvas72" width="72px" height="72px"></canvas>
+    <canvas sz="57" id="myCanvas57" width="57px" height="57px"></canvas>
+    <canvas sz="32" id="myCanvas32" width="32px" height="32px"></canvas>
+    <canvas sz="16" id="myCanvas16" width="16px" height="16px"></canvas>
   </div>
   <div id="preview-pane">
     <div class="preview-container"><img src="placeholder.png" class="jcrop-preview" alt="Preview" /></div>
@@ -398,6 +401,7 @@ $('.colorChoose').colorPicker('.colorChoose');
 <link rel="stylesheet" href="http://code.jquery.com/qunit/git/qunit.css" type="text/css" media="screen" /> 
 
 <script src="http://code.jquery.com/qunit/git/qunit.js"></script>
+<script type="text/javascript" src="../js/currentTool.js"></script>
 <script type="text/javascript" src="../js/tests2.js"></script>
 <script type="text/javascript" src="../js/tests_assertions.js"></script>
 <script type='text/javascript' src="../js/jcropCode.js"></script>

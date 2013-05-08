@@ -92,13 +92,10 @@ if(!set){
 
 //Adds element & listener for when move off the selection area, that will remove it
 
-$('body').prepend('<div id="wholeBODY"></div>');
+$('.container').mousemove(function(){
 
-$('#wholeBODY').mousemove(function(){
-
-$('#colorPicker').remove();
-var set = false;
-$('#wholeBODY').remove();
+  $('#colorPicker').remove();
+  var set = false;
 
 });
 
@@ -153,17 +150,21 @@ $(this).parent().append(appendElements);
 
 colorBar.addEventListener('mousedown', function(evt) {
 
-var mousePos2 = getMousePos(colorBar, evt);
-var moveup = mousePos2.y  - 10;
+  var mousePos2 = getMousePos(colorBar, evt);
+  var moveup = mousePos2.y  - 10;
 
 
-if(moveup < 0){
-  var moveup = 0;
-}
+  if(moveup < 0){
 
-if(moveup > 244){
-  var moveup = 244; 
-}
+    var moveup = 0;
+
+  }
+
+  if(moveup > 244){
+
+    var moveup = 244; 
+    
+  }
 
 $('#hueslide').css('top',moveup + "px");
 

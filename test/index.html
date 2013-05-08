@@ -12,6 +12,122 @@
 <link rel="stylesheet" href="../styles/demos.css" type="text/css" />
 <link rel="stylesheet" href="../styles/jquery.Jcrop.css" type="text/css" />
 
+<style>
+/* color picker styles */
+
+#colorPick{
+  position: relative;
+  width: 256;
+  height: 256;
+  background-color: #666;
+}
+
+#myCanvas2{
+  right: 0px;
+  position: absolute;
+}
+
+#hueslide{
+  width: 20px;
+  right: 0px;
+  position: absolute;
+  height: 10px;
+  border: 1px solid #fff;
+  z-index: 5;
+  border-radius: 10px;
+  box-shadow: 1px 1px 1px #000;
+}
+
+
+#circle{
+  right: 15px;
+  width:10px;
+  height: 10px;    
+  position: absolute;
+  background-color: transparent;
+  border: 1px solid #fff;
+  border-radius: 10px;
+  box-shadow: 1px 1px 1px #000;
+}
+
+#wholeBODY{
+  width:100%;
+  height:100%;
+  position: absolute;
+}
+
+.displayselection{
+  top:5px;
+  width:10px;
+  height: 10px;    
+  position: absolute;
+  background-color: transparent;
+  border-radius: 10px;
+}
+
+
+#displaycolors{
+  width:290px;
+  position: absolute;
+  bottom: -36px;
+  background-color: #333;
+  overflow: hidden;
+  height: 25px;
+  border: 1px solid #333;
+}
+
+.input{
+  width:38px;
+  margin-right:7px;
+  height: 15px;
+  font-size: 12px;
+  float: left;
+  background-color: #fff;
+  position: relative;
+  padding: 5px;
+  text-align: center;
+}
+
+#output{
+  width:80px;
+}
+
+#colorPicker{
+  padding:10px;
+  background-color: #333;
+  width:291px;
+  height:257px;
+  border: 1px solid #999;
+}
+
+#showColor{
+  height:25px;
+  width:25px;
+  position: absolute;
+  right:0;
+}
+
+.colorDropField{
+  margin:0;
+  padding: 0;
+  position: relative;
+}
+
+.colorDropIcon{
+  background-color: #333;
+  right:0;
+  top: 4;
+  position: absolute;
+  z-index: 500;
+  position: absolute;
+}
+
+
+</style>
+
+
+
+
 
 <style>
 
@@ -95,8 +211,8 @@
 }
 
 .pixel{
-    width:9px;
-    height:9px;
+    width:16px;
+    height:16px;
     display:block;
     float:left;
     outline:1px dotted #ddd;  
@@ -115,7 +231,58 @@
 };
 
 
+/*jcrop */
 
+
+
+
+/* Apply these styles only when #preview-pane has
+   been placed within the Jcrop widget */
+
+#holder { 
+  border: 10px dashed #ccc; 
+  margin: 20px auto;
+  width: 512px; 
+  height: 512px; 
+}
+
+
+#holder.hover { 
+  border: 10px dashed #333;
+}
+
+.jcrop-holder #preview-pane {
+  display: block;
+  position: absolute;
+  z-index: 2000;
+  top: 10px;
+  right: -280px;
+  padding: 6px;
+  border: 1px rgba(0,0,0,.4) solid;
+  background-color: white;
+
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+
+  -webkit-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* The Javascript code will set the aspect ratio of the crop
+   area based on the size of the thumbnail preview,
+   specified here */
+#preview-pane .preview-container {
+  width: 32px;
+  height: 32px;
+  overflow: hidden;
+}
+
+canvas:hover {
+  box-shadow: 0px 0px 19px #333;
+  outline: 2px dashed #666;
+}
 
 
 
@@ -126,7 +293,7 @@
 
 
 
-<div class="e" style="width:288px; height:288px"></div>
+<div class="e" style="width:512px; height:512px"></div>
 
 <span class="console"></span>
 <div class="btn tool" id="darken"></div>
@@ -152,12 +319,13 @@
 
 
 <select class="brushSize" value='55'>
+    <option value="6">6</option>
   <option value="1">1</option>
   <option value="2">2</option>
   <option value="3">3</option>
   <option value="4">4</option>
     <option value="5">5</option>
-  <option value="6">6</option>
+
   <option value="7">7</option>
   <option value="8">8</option>
   <option value="10">10</option>
@@ -167,8 +335,59 @@
 
 </select>
 <input class="darkenAmount" type='text' value='55'>
+<input type="text" class="colorChoose" name="fname"><br>
 
 
+<div class="container">
+<div class="row">
+<div class="span12">
+<div class="jc-demo-box">
+
+<div class="page-header">
+</div>
+
+<article>
+    <div id="holder">  <img src="placeholder.png" id="target" alt="Drag here" /></div> 
+  <p id="status">File API &amp; FileReader API not supported</p>
+  <p>Drag and image into the area above or simply start drawing.</p>
+  <p>Double click the cropping area to commit.</p>
+  <p class="warningText"></p>
+</article>
+
+
+  <div class="288Holder">
+    <canvas id="myCanvas288" width="288px" height="288px"></canvas>
+    <canvas id="myCanvas144" width="144px" height="144px"></canvas>
+    <canvas id="myCanvas114" width="114px" height="114px"></canvas>
+    <canvas id="myCanvas72" width="72px" height="72px"></canvas>
+    <canvas id="myCanvas57" width="57px" height="57px"></canvas>
+    <canvas id="myCanvas32" width="32px" height="32px"></canvas>
+    <canvas id="myCanvas16" width="16px" height="16px"></canvas>
+  </div>
+  <div id="preview-pane">
+    <div class="preview-container"><img src="placeholder.png" class="jcrop-preview" alt="Preview" /></div>
+
+  </div>
+    <div style="width:100px; height:50px; display:block; background-color:blue; color:#fff">Crop!</div>
+
+<div class="clearfix"></div>
+
+</div>
+</div>
+</div>
+</div>
+
+<!-- Color Picker Code -->
+<script src="../js/colorPicker.js"></script>
+<script type="text/javascript">
+
+jQuery(document).ready(function() {
+
+$('.colorChoose').colorPicker('.colorChoose');
+
+});
+
+</script>
 
  
 <!-- Javascript Testing Code -->
@@ -181,5 +400,6 @@
 <script src="http://code.jquery.com/qunit/git/qunit.js"></script>
 <script type="text/javascript" src="../js/tests2.js"></script>
 <script type="text/javascript" src="../js/tests_assertions.js"></script>
+<script type='text/javascript' src="../js/jcropCode.js"></script>
 </body>
 </html>

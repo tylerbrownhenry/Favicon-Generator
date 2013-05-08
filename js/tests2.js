@@ -58,19 +58,18 @@ jQuery.fn.setBorderRadius = function(size) {
 
 //#-------------->
 
-settings = {offSet:30,pixelSize:9,darken:6,tool:'pen',color:'ffffff',change:false,density:.51,opacity:.51};
-settings.brush = {size:6,shape:'circle',darken: {que:0},hardness:1,opacity:{0:10,1:20}};
+settings = {offSet:60,pixelSize:16,darken:6,tool:'pencil',color:'#ffffff',change:false,density:.51,opacity:.51};
+settings.brush = {size:4,shape:'square',darken: {que:0},hardness:1};
 
 //#--------------->
 
 settings.brush.changeSize = function(size){
-    
     // We can add an if statment and make the function check each time if the 
     // tool has changed when we click it.
     var size = parseInt(size);
     settings.brush.size = size;
 
-    $('#cursor').setBorderRadius(size * 9);
+    $('#cursor').setBorderRadius(size * settings.pixelSize);
     
     if(settings.brush.shape === 'circle'){
 
@@ -90,22 +89,14 @@ settings.brush.changeSize = function(size){
     
 };
 
-settings.tool = function(f){
-    if(f == true){
-        this.change = true;
-    } else {
-        this.change = false;
-    };
-};
-
-settings.tool = true;
-
 settings.changeColor = (function(c){
+
     settings.color = c;
     return settings.color;    
+
 });
 
-settings.brush.changeSize(14);
+settings.brush.changeSize($('.brushSize').val());
 
 // 0 is hard, 1, 2,... softer
 //#------> Changes
@@ -135,43 +126,50 @@ var difference = function (a, b, d) {
 
 };
 
-bgcolor = 100; // Color that we are 'painting' over.
-brushcolor = 15; // Color of the brush that we are using.
-
-console.log(settings.density,settings.opacity,settings);
-console.log(difference(bgcolor,brushcolor));
-
 //#-------->
 
 function cvtRGBtoHex(color,newDepth){
 
     if(color.indexOf('rgb') !== -1){
+
         var tempColor = color.substring((color.indexOf('(')+1),color.indexOf(')')).split(',');
         var color = '';
+
         for(i=0;i !== 3; i ++){
-        //var add = (typeof newDepth != 'undefined')? settings.brush.opacity[newDepth] : 0;
+
            var add = 0;
-           tempColor[i] = (parseInt(tempColor[i]-add)).toString(16);
+           tempColor[i] = (parseInt(tempColor[i])).toString(16);
             
             if(tempColor[i].length == 1){ 
+
                 tempColor[i] = '0' + tempColor[i];
+
             };
+
            color += ''+tempColor[i];
+
         };  
     };
+
     return color;
+
 };
 
 //#-------->
 
 function brushDabRadius(x, y, cx, cy, r, returnVal) {
+
     var dx = x-cx
     var dy = y-cy
+
     if(typeof returnVal == 'undefined'){
-      //console.log((dx*dx+dy*dy),(r*r));f
-    return dx*dx+dy*dy <= r*r //true/false    
+
+      return dx*dx+dy*dy <= r*r //true/false   
+
     } else {
+
       return dx*dx+dy*dy;
+
     }
 
 // return dx*dx+dy*dy+'|'+r*r; // gives the numbers compared
@@ -194,42 +192,33 @@ function cleanColorInput(color){
 };
 
 
-//#-------------> darken / lighten colors
-var convertNum = (function convertNum(color,currentColor,newDepth){
-    console.log(color);
-    var color = cleanColorInput(color);
-    var brushColor = cleanColorInput(settings.color);
+//#-------------> 
 
-   // if(typeof currentColor !== 'undefined'){
-    //  var lesser = cvtRGBtoHex(color,newDepth); //// ffffff, .25, 000000 ====> 
-    //  var color = difference(bgcolor,brushcolor);
-   // };
+var convertNum = (function convertNum(brushColor){
+
+    var color = cleanColorInput(brushColor);
 
     darkenColor = new Array();
     var change = 0; // Was darken variable.
     
     for(var i=5; color.length > 1;i--){
-        var num = '';
+      
+      var num = '';
 
-          //Darken will be added here... as 'change';
-          var num = ((parseInt(color.shift(),16)*16)+(parseInt(color.shift(),16)) - change);
-          var brushNum = ((parseInt(brushColor.shift(),16)*16)+(parseInt(brushColor.shift(),16)) - change); 
-          var diff = difference(num,brushNum,newDepth);
-          if(num > brushNum){
-                        var num = num - diff;
-          } else {
-                      var num = num + diff;
-          };
+      //Darken will be added here... as 'change';
+      num = ((parseInt(color.shift(),16)*16)+(parseInt(color.shift(),16)) - change);
+      
+      num = num.toString(16);
+
+      if(num.indexOf('-') !== -1){
+
+          num = '00';
+
+      }; 
           
+      num = (num.length == 1)? 0 + num : num;
 
-          var num = num.toString(16);
-
-    if(num.indexOf('-') !== -1){
-        num = '00';
-    }; 
-        
-    num = (num.length == 1)? 0 + num : num;
-    darkenColor.push(num);
+      darkenColor.push(num);
 
     };
 
@@ -262,18 +251,18 @@ function createDivs(){
 
     };
     
-    $('.e').html('<div id="cursor" class="circle"></div>'+appendToDivs);
+    $('.e').html('<div id="cursor" class="square"></div>'+appendToDivs);
 
 };
 
-createDivs();
+//createDivs();
 //#--------------------->
 
 
 
 
 function useCurrentTool(target){
-   
+   console.log(target);
     var x = parseInt(settings.X),
     y = parseInt(settings.Y);    
    
@@ -295,47 +284,55 @@ function useCurrentTool(target){
     coord.maxY = parseInt(y+settings.brush.add);
     
     for (var key in coord) {
+
        var obj = coord[key];
        if(obj < 1){ coord[key] = 1;};
        if(obj > 32){ coord[key] = 32;};
+
     };
         
-//#------------> Pencil / Burn Tool  
+//#------------> Drawing Tools
   for(var e=coord.maxY;e < coord.minY + 1; e++){
     for(var i=coord.maxX;i < coord.minX + 1; i++){
 
       var blurLevel = 'notSet';
       var test = false;
+        
+      var pixel = $('.pixel[x='+i+'][y='+e+']'); 
 
-      for (var g = 0; g < 10; g++) {
+      if(settings.tool !== 'pen'){
 
-        test = brushDabRadius(i, e, x, y, (settings.brush.size/2)-g);
+        var hitTest = true;
 
-        if(test){
+      } else {
 
-          blurLevel = g;
+        var hitTest = brushDabRadius(i, e, x, y, (settings.brush.size/2));
+
+        for (var g = 0; g < 10; g++) {
+
+          var test = brushDabRadius(i, e, x, y, (settings.brush.size/2)-g);
+
+          if(test){
+
+            blurLevel = g;
        
+          };
+
         };
 
       };
-
-      //settings.brush.hardness
-        
-      var pixel = $('.pixel[x='+i+'][y='+e+']'); 
-      var hitTest = brushDabRadius(i, e, x, y, (settings.brush.size/2));
       
       if(settings.change === true && hitTest === true){
-        console.log('x');
+
         var color = pixel.css('backgroundColor');               
-        pixel.css('backgroundColor',convertNum(color)); 
-          
+        pixel.css('backgroundColor',convertNum(color)).attr('name',blurLevel);
+
       };
        
-      if(settings.change === false){
-        if((settings.tool === 'pencil') || (settings.tool === 'pen' && hitTest === true)){    
+      if(settings.change === false && hitTest === true){
+        if((settings.tool === 'pencil') || (settings.tool === 'pen')){    
 
-             var color = pixel.css('backgroundColor');
-             pixel.css('backgroundColor',convertNum(settings.color,color,blurLevel)).attr('name',blurLevel);
+          pixel.css('backgroundColor',settings.color);
 
         };
       };
@@ -351,12 +348,15 @@ function useCurrentTool(target){
 
 
 $('.brushSize').change(function() {
-  settings.brush.changeSize(parseInt($(this).val()));
+
+    settings.brush.changeSize(parseInt($(this).val()));
+
 });
 
 $('.hardness').change(function() {
  // console.log($(this).val());
-  settings.brush.hardness = $(this).val();
+    settings.brush.hardness = $(this).val();
+
 });
 
 
@@ -367,41 +367,56 @@ $('.darkenAmount').change(function() {
 
 //#------> Clicks
 
+
+
+
+
+
+
 $('.tool,.brushSize').click(function(){
-    
+console.log('ghfgh');    
     var thisId = $(this).attr('id');
     settings.tool = thisId;
     
     if(thisId === 'darken'){
+
         settings.change = true;
+
     } else if (thisId === 'pencil') {
+
         settings.change = false;
         settings.brush.shape = 'square';
         $('#cursor').removeClass('circle').addClass('square');
+
     } else if (thisId === 'pen'){
+
         settings.brush.shape = 'circle';
         settings.change = false;
         $('#cursor').removeClass('square').addClass('circle');
-    }
+
+    };
+
     settings.brush.changeSize($('.brushSize').val());
+
 });
 
-$('#cursor').click(function(t){  
-    useCurrentTool(this);
-});
 
-$('.color').click(function(){
-    var thisId = $(this).attr('id');
+$('.colorChoose').click(function(){
+
+    var thisId = $('.colorDropIcon').css('backgroundColor');
     settings.color = thisId;
+
 });
 
 $('#eyedropper').click(function(){
+
     var thisId = $(this).attr('id');
-    settings.change = false;
     settings.tool = thisId;
+
 });
 
 $("body").mousemove(function(e) {
+
     settings.X = Math.ceil((e.pageX - $('.e').offset().left)/9);
     settings.Y = Math.ceil((e.pageY - $('.e').offset().top)/9);
     
@@ -409,6 +424,7 @@ $("body").mousemove(function(e) {
     settings.hoverCursorY = ((settings.Y * 9) - settings.offSet )+'px';
 
     $('#cursor').stop(true,true).animate({left:settings.hoverCursorX,top:settings.hoverCursorY},500);
+
 });
 
 

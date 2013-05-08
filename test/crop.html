@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Aspect Ratio with Preview Pane | Jcrop Demo</title>
+  <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/jquery.Jcrop.js"></script>
+
+
+
+<link rel="stylesheet" href="../styles/main.css" type="text/css" />
+<link rel="stylesheet" href="../styles/demos.css" type="text/css" />
+<link rel="stylesheet" href="../styles/jquery.Jcrop.css" type="text/css" />
+
+
+
+
+
+
+<style type="text/css">
+
+
+.e{
+    border:1px solid #ccc;
+    position: relative;
+    overflow:hidden;
+}
+
+#cursor{
+    position:absolute;
+    border:1px solid #aaa;
+    box-shadow: 0px 0px 16px #333;
+}
+
+.circle{
+    height:45px;
+    width:45px;
+    border-radius:25px;
+}
+
+.square{
+    height:45px;
+    width:45px;
+    border-radius:0px;
+}
+
+.btn{
+    width:10px;
+    height:10px;
+    display:block;
+    border:1px solid #000;
+}
+
+.pixel{
+    width:9px;
+    height:9px;
+    display:block;
+    float:left;
+    outline:1px dotted #ddd;  
+}
+.pixel:hover{
+ 
+ outline:1px solid #ccc;   
+}
+
+.vLineL{
+    height:100px;
+    background-color:#333;
+    width:1px;
+    position:absolute;
+    
+};
+
+
+
+
+
+
+
+/* Apply these styles only when #preview-pane has
+   been placed within the Jcrop widget */
+
+#holder { 
+  border: 10px dashed #ccc; 
+  margin: 20px auto;
+  width: 512px; 
+  height: 512px; 
+}
+
+.pixel { 
+  border: none; 
+  width:16px;
+  height:16px;
+  display:block;
+  background-color:#333;
+  float:left;
+}
+
+.pixel:hover { 
+  opacity: 0.8;
+  display: block;
+  background-color: #333;
+  float: left;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  border: 1px solid #999;
+  cursor:pointer;
+}
+
+#holder.hover { 
+  border: 10px dashed #333;
+}
+
+.jcrop-holder #preview-pane {
+  display: block;
+  position: absolute;
+  z-index: 2000;
+  top: 10px;
+  right: -280px;
+  padding: 6px;
+  border: 1px rgba(0,0,0,.4) solid;
+  background-color: white;
+
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+
+  -webkit-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* The Javascript code will set the aspect ratio of the crop
+   area based on the size of the thumbnail preview,
+   specified here */
+#preview-pane .preview-container {
+  width: 32px;
+  height: 32px;
+  overflow: hidden;
+}
+
+anvas:hover {
+  box-shadow: 0px 0px 19px #333;
+  outline: 2px dashed #666;
+}
+
+</style>
+
+</head>
+<body>
+<div class="e" style="width:288px; height:288px"></div>
+
+<span class="console"></span>
+<div class="btn tool" id="darken"></div>
+<div class="btn tool" id="pencil"></div>
+<div class="btn color" id="#23ffff"></div>
+<div class="btn" id="eyedropper"></div>
+<div class="btn tool" id="pen"></div>
+<!-- http://refreshless.com/nouislider/ -->
+<input class="brushSize" type='text' value='55'>
+<input class="darkenAmount" type='text' value='55'>
+
+
+
+<!-- dggdgdfg -->
+
+
+<div class="container">
+<div class="row">
+<div class="span12">
+<div class="jc-demo-box">
+
+<div class="page-header">
+</div>
+
+<article>
+    <div id="holder">  <img src="placeholder.png" id="target" alt="Drag here" /></div> 
+  <p id="status">File API &amp; FileReader API not supported</p>
+  <p>Drag and image into the area above or simply start drawing.</p>
+  <p>Double click the cropping area to commit.</p>
+  <p class="warningText"></p>
+</article>
+
+
+  <div class="288Holder">
+    <canvas id="myCanvas288" width="288px" height="288px"></canvas>
+    <canvas id="myCanvas144" width="144px" height="144px"></canvas>
+    <canvas id="myCanvas114" width="114px" height="114px"></canvas>
+    <canvas id="myCanvas72" width="72px" height="72px"></canvas>
+    <canvas id="myCanvas57" width="57px" height="57px"></canvas>
+    <canvas id="myCanvas32" width="32px" height="32px"></canvas>
+    <canvas id="myCanvas16" width="16px" height="16px"></canvas>
+  </div>
+  <div id="preview-pane">
+    <div class="preview-container"><img src="placeholder.png" class="jcrop-preview" alt="Preview" /></div>
+
+  </div>
+    <div style="width:100px; height:50px; display:block; background-color:blue; color:#fff">Crop!</div>
+
+<div class="clearfix"></div>
+
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+
+var holder = document.getElementById('holder'),
+    state = document.getElementById('status');
+
+if (typeof window.FileReader === 'undefined') {
+  state.className = 'fail';
+} else {
+  state.className = 'success';
+  state.innerHTML = 'File API & FileReader available';
+}
+
+$(function() {
+
+  dataArray = [];
+
+function setupDrawingArea(data){
+
+
+              var appendToDivs ='';
+
+              console.log(data.length);
+              // 288*288*4
+
+              for (var i = 0, e = 0; e < data.length; e+=4) {
+
+                appendToDivs += '<div class="pixel" style="background: rgba('+data[i++]+', '+data[i++]+', '+data[i++]+', '+data[i++]+'); "></div>';
+              
+              };
+
+              $('.jcrop-holder').append(appendToDivs);
+
+
+}
+
+  holder.ondragover = function () { this.className = 'hover'; return false; };
+  holder.ondragend = function () { this.className = ''; return false; };
+  holder.ondrop = function (e) {
+    console.log(e);
+
+
+  this.className = '';
+  e.preventDefault();
+
+  var file = e.dataTransfer.files[0],
+      reader = new FileReader();
+
+
+
+
+
+
+  function updateCoords(c){
+    $('#x').val(c.x);
+    $('#y').val(c.y);
+    $('#w').val(c.w);
+    $('#h').val(c.h);
+  };
+
+        $('.jcrop-tracker').onload = function(e){
+            console.log('tracker loaded');
+        };
+
+  reader.onload = function (event) {
+ 
+    // holder.style.background = 'url(' + event.target.result + ') no-repeat center';
+    $('#target').attr('src',event.target.result).unwrap('#holder');
+   $('.jcrop-preview').attr('src',event.target.result);
+    // $('#src').val(event.target.result);
+     $('#target').Jcrop({
+            onChange: updatePreview,
+            onSelect: updatePreview,
+            aspectRatio: xsize / ysize
+    },function(){
+            // Use the API to get the real image size
+            var bounds = this.getBounds();
+            boundx = bounds[0];
+            boundy = bounds[1];
+
+            // Store the API in the jcrop_api variable
+            jcrop_api = this;
+
+            // Move the preview into the jcrop container for css positioning
+            $preview.appendTo(jcrop_api.ui.holder);
+              $('.jcrop-tracker').dblclick(function(){
+
+                    $('.jcrop-holder').css('width',512).css('height',512).children().not('#preview-pane').fadeOut(1000);
+                    $('#preview-pane').animate({right:'-65'},1000);
+                    console.log(dataArray);
+                    setupDrawingArea(dataArray.data);
+
+              });
+    });
+
+  };
+
+  reader.readAsDataURL(file);
+    console.log(file,reader);
+
+  return false;
+};
+
+    // Create variables (in this scope) to hold the API and image size
+    var jcrop_api,
+        boundx,
+        boundy,
+
+        // Grab some information about the preview pane
+        $preview = $('#preview-pane'),
+        $pcnt = $('#preview-pane .preview-container'),
+        $pimg = $('#preview-pane .preview-container img'),
+
+        xsize = $pcnt.width(),
+        ysize = $pcnt.height();
+    
+
+    function updatePreview(c)
+    {
+      if (parseInt(c.w) > 0)
+      {
+        var rx = xsize / c.w;
+        var ry = ysize / c.h;
+
+        $pimg.css({
+          width: Math.round(rx * boundx) + 'px',
+          height: Math.round(ry * boundy) + 'px',
+          marginLeft: '-' + Math.round(rx * c.x) + 'px',
+          marginTop: '-' + Math.round(ry * c.y) + 'px'
+        });
+      }
+
+      var canvas288 = document.getElementById('myCanvas288');
+      var canvas144 = document.getElementById('myCanvas144');
+      var canvas114= document.getElementById('myCanvas114');
+      var canvas72 = document.getElementById('myCanvas72');
+      var canvas57 = document.getElementById('myCanvas57');
+      var canvas32 = document.getElementById('myCanvas32');
+      var canvas16 = document.getElementById('myCanvas16');
+
+      var context288 = canvas288.getContext('2d');
+      var context144 = canvas144.getContext('2d');
+      var context114 = canvas114.getContext('2d');
+      var context72 = canvas72.getContext('2d');
+      var context57 = canvas57.getContext('2d');
+      var context32 = canvas32.getContext('2d');
+      var context16 = canvas16.getContext('2d');
+
+
+      var imageObj = new Image();
+
+      imageObj.onload = function() {
+        // draw cropped image
+        var sourceX = c.x;
+        var sourceY = c.y;
+        var sourceWidth = c.w;
+        var sourceHeight = c.h;
+        if(sourceHeight < 288){
+          $('.warningText').text('I would recommend cropping your image to at least 288 pixels width to avoid loosing quality.  You are currently at '+sourceHeight+' x '+sourceWidth+'.');
+        } else{
+          $('.warningText').text("That's a good size. :)");
+        };
+        var destWidth = 288;
+        var destHeight = 288;
+        // var destX = canvas.width / 2 - destWidth / 2;
+        // var destY = canvas.height / 2 - destHeight / 2;
+        var destX = 0;
+        var destY = 0;
+
+
+        context288.drawImage(imageObj, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, 288, 288);
+        context144.drawImage(imageObj, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, 144, 144);
+        context114.drawImage(imageObj, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, 114, 114);
+        context72.drawImage(imageObj, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, 72, 72);
+        context57.drawImage(imageObj, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, 57, 57);
+        context32.drawImage(imageObj, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, 32, 32);
+        context16.drawImage(imageObj, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, 16, 16);
+
+        imageData288 = context288.getImageData(0, 0, 288, 288);
+        imageData144 = context144.getImageData(0, 0, 144, 144);
+        imageData114 = context114.getImageData(0, 0, 114, 114);
+        imageData72 = context72.getImageData(0, 0, 72, 72);
+        imageData57 = context57.getImageData(0, 0, 57, 57);
+        imageData32 = context32.getImageData(0, 0, 32, 32);
+        imageData16 = context16.getImageData(0, 0, 16, 16);
+
+        
+        dataArray = imageData32;
+      };
+
+      imageObj.src = $('#preview-pane .preview-container img').attr('src');
+
+
+
+
+    };
+
+});
+</script>
+
+
+
+<!-- Javascript Testing Code -->
+  <div id="x">Q</div>
+  <div id="qunit" ></div>
+  <div id="qunit-fixture"></div>
+
+<link rel="stylesheet" href="http://code.jquery.com/qunit/git/qunit.css" type="text/css" media="screen" /> 
+
+<script src="http://code.jquery.com/qunit/git/qunit.js"></script>
+<script type="text/javascript" src="../js/tests.js"></script>
+</body>
+</html>
+

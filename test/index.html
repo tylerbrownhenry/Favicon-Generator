@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>QUnit Example</title>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/jquery.Jcrop.js"></script>
+
+
+
+<link rel="stylesheet" href="../styles/main.css" type="text/css" />
+<link rel="stylesheet" href="../styles/demos.css" type="text/css" />
+<link rel="stylesheet" href="../styles/jquery.Jcrop.css" type="text/css" />
+
+
+<style>
+
+/* Test styles only!!! */
+
+#qunit-tests{
+  height: 450px;
+  overflow: scroll;
+}
+
+#x{
+  position:fixed;
+  top:0px;
+  background-color: #0d3349;
+  color: #8699a4; 
+  border-radius:5px;
+  padding: 0.5em 0.5em; 
+  font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial, sans-serif;
+  cursor:pointer;
+  margin:10px;
+}
+
+
+#qunit{
+  position:fixed; 
+  bottom:0px;
+  width:100%; 
+  height:600px;
+  left:0px;
+}
+
+#fails{
+
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: red;
+  border-radius: 15px;
+  height: 15px;
+  width: 19px;
+  font-size: 9px;
+  text-align: center;
+  color: #fff;
+  padding-top: 3px;
+
+}
+
+</style>
+<style>
+	
+.e{
+    border:1px solid #ccc;
+    position: relative;
+    overflow:hidden;
+    background-color: #000;
+}
+
+#cursor{
+    position:absolute;
+    border:1px solid #aaa;
+    box-shadow: 0px 0px 16px #333;
+}
+
+.circle{
+    height:45px;
+    width:45px;
+    border-radius:25px;
+}
+
+.square{
+    height:45px;
+    width:45px;
+    border-radius:0px;
+}
+
+.btn{
+    width:10px;
+    height:10px;
+    display:block;
+    border:1px solid #000;
+}
+
+.pixel{
+    width:9px;
+    height:9px;
+    display:block;
+    float:left;
+    outline:1px dotted #ddd;  
+}
+.pixel:hover{
+ 
+ outline:1px solid #ccc;   
+}
+
+.vLineL{
+    height:100px;
+    background-color:#333;
+    width:1px;
+    position:absolute;
+    
+};
+
+
+
+
+
+
+</style>
+
+</head>
+<body>
+
+
+
+<div class="e" style="width:288px; height:288px"></div>
+
+<span class="console"></span>
+<div class="btn tool" id="darken"></div>
+<div class="btn tool" id="pencil"></div>
+<div class="btn color" id="#23ffff"></div>
+<div class="btn" id="eyedropper"></div>
+<div class="btn tool" id="pen"></div>
+<!-- http://refreshless.com/nouislider/ -->
+
+<select class="hardness" value='55'>
+	<option value="1">1</option>
+	<option value=".90">.90</option>
+	<option value=".8">.8</option>
+	<option value=".7">.7</option>
+	<option value=".6">.6</option>
+	<option value=".5">.5</option>
+	<option value=".4">.4</option>
+	<option value=".3">.3</option>
+	<option value=".2">.2</option>
+	<option value=".1">.1</option>
+	<option value="0">0</option>
+</select>
+
+
+<select class="brushSize" value='55'>
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+    <option value="5">5</option>
+  <option value="6">6</option>
+  <option value="7">7</option>
+  <option value="8">8</option>
+  <option value="10">10</option>
+  <option value="12">12</option>
+  <option value="13">13</option>
+  <option value="14">14</option>
+
+</select>
+<input class="darkenAmount" type='text' value='55'>
+
+
+
+ 
+<!-- Javascript Testing Code -->
+  <div id="x">Q</div>
+  <div id="qunit" ></div>
+  <div id="qunit-fixture"></div>
+
+<link rel="stylesheet" href="http://code.jquery.com/qunit/git/qunit.css" type="text/css" media="screen" /> 
+
+<script src="http://code.jquery.com/qunit/git/qunit.js"></script>
+<script type="text/javascript" src="../js/tests2.js"></script>
+<script type="text/javascript" src="../js/tests_assertions.js"></script>
+</body>
+</html>

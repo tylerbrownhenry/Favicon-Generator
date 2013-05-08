@@ -74,7 +74,7 @@ settings.brush.changeSize = function(size){
     if(settings.brush.shape === 'circle'){
 
       var add = 0;
-      settings.offSet = ((size * settings.pixelSize)/2) + 6;
+      settings.offSet = ((size * settings.pixelSize)/2) + 10;
 
     } else {
 
@@ -262,7 +262,7 @@ function createDivs(){
 
 
 function useCurrentTool(target){
-   console.log(target);
+
     var x = parseInt(settings.X),
     y = parseInt(settings.Y);    
    
@@ -417,11 +417,11 @@ $('#eyedropper').click(function(){
 
 $("body").mousemove(function(e) {
 
-    settings.X = Math.ceil((e.pageX - $('.e').offset().left)/9);
-    settings.Y = Math.ceil((e.pageY - $('.e').offset().top)/9);
+    settings.X = Math.ceil((e.pageX - $('.e').offset().left)/settings.pixelSize);
+    settings.Y = Math.ceil((e.pageY - $('.e').offset().top)/settings.pixelSize);
     
-    settings.hoverCursorX = ((settings.X * 9) - settings.offSet )+'px';
-    settings.hoverCursorY = ((settings.Y * 9) - settings.offSet )+'px';
+    settings.hoverCursorX = ((settings.X * settings.pixelSize) - settings.offSet )+'px';
+    settings.hoverCursorY = ((settings.Y * settings.pixelSize) - settings.offSet )+'px';
 
     $('#cursor').stop(true,true).animate({left:settings.hoverCursorX,top:settings.hoverCursorY},500);
 

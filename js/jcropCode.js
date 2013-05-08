@@ -34,7 +34,7 @@ function setupDrawingArea(data){
 
     };
     
-    $('.e').html('<div id="cursor" class="square"></div>'+appendToDivs);
+    $('.jcrop-holder').html('<div id="cursor" class="square"></div>'+appendToDivs);
 
 
     $("#cursor").on("click", (function() {
@@ -178,8 +178,8 @@ function setupDrawingArea(data){
         var destY = 0;
 
 
-       context288.drawImage(imageObj, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, 288, 288);
-              context288.drawImage(imageObj, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, 288, 288);
+        context288.drawImage(imageObj, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, 288, 288);
+        context288.drawImage(imageObj, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, 288, 288);
         context144.drawImage(imageObj, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, 144, 144);
         context114.drawImage(imageObj, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, 114, 114);
         context72.drawImage(imageObj, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, 72, 72);
@@ -187,7 +187,7 @@ function setupDrawingArea(data){
         context32.drawImage(imageObj, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, 32, 32);
         context16.drawImage(imageObj, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, 16, 16);
 
-      imageData288 = context288.getImageData(0, 0, 288, 288);
+        imageData288 = context288.getImageData(0, 0, 288, 288);
         imageData144 = context144.getImageData(0, 0, 144, 144);
         imageData114 = context114.getImageData(0, 0, 114, 114);
         imageData72 = context72.getImageData(0, 0, 72, 72);
@@ -197,7 +197,8 @@ function setupDrawingArea(data){
 
         
         dataArray = imageData32;
-         setupDrawingArea(dataArray.data);
+        setupDrawingArea(dataArray.data);
+        
       };
 
       imageObj.src = $('#preview-pane .preview-container img').attr('src');

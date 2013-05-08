@@ -12,7 +12,7 @@ var globalThis = $(this),
 thisWidth = globalThis.width(),
 thisHeight = globalThis.height();
 globalThis.wrap('<div class="colorDropField"></div>');
-globalThis.parent().width(thisWidth).append('<div class="colorDropIcon"></div>');
+globalThis.parent().width(thisWidth).prepend('<div class="colorDropIcon"></div>');
 globalThis.parent().children('.colorDropIcon').height(thisHeight).width(thisHeight);
 
 
@@ -342,7 +342,7 @@ return parseInt(max - min);
 //
 //All of the different color values are logged inside of an array to make it accessible when rolling over the object
 
-console.log(red,green,blue,"matchie matchie");
+
 
 if(check){
       var redw = parseInt(match[0], 16),

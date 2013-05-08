@@ -800,8 +800,8 @@ input[type="search"],
 input[type="tel"],
 input[type="color"],
 .uneditable-input {
-  display: inline-block;
-  position: absolute;
+  display: block;
+  position: relative;
   height: 20px;
   padding: 4px 6px;
   margin-bottom: 10px;
@@ -899,6 +899,7 @@ input[type="file"] {
 }
 select {
   width: 220px;
+  display: block;
   border: 1px solid #cccccc;
   background-color: #ffffff;
 }

@@ -158,28 +158,25 @@ function updateCanvas(thisSize){
       var can = document.getElementById('myCanvas'+thisSize);
       var ctx = can.getContext('2d');
       var img = ctx.createImageData(thisSize, thisSize); // width x height
-     // ctx.drawImage(img, 0, 0 );
+      // ctx.drawImage(img, 0, 0 );
       var myData = ctx.getImageData(0,0,thisSize,thisSize);
 
-      //ctx = ctx.getContext('2d');
-      ctx.drawImage(imageObj, 0, 0, thisSize, thisSize, 0, 0, 288, 288);
 
-      //var imgData = ctx.createImageData(thisSize, thisSize); // width x height
-    //  var data = myData;
-     // var imgData = can.toDataURL();
-     // console.log(imgData);
-    //  console.log(myData[1000],settings.imageData['_'+thisSize].data[1000]);
-//console.log(data[1000],settings.imageData['__'+thisSize][1000]);
+     // ctx.drawImage(imageObj, 0, 0, thisSize, thisSize, 0, 0, 288, 288);
+
+if(settings.saved){
+  console.log(myData.data[1000],settings.saved[1000]);
+    for(var i = 0, n = thisSize * thisSize * 4; i < n; i += 4) {
+      myData.data[i] += settings.saved[i] +5;
+      myData.data[i+1] += settings.saved[i+1] +5;
+      myData.data[i+2] += settings.saved[i+2] +5;
+      myData.data[i+3] += settings.saved[i+3] +5;
+    }
+  console.log(myData[1000],settings.saved[1000]);
+}
 
 
 
-
-        // for(var i = 0, n = thisSize * thisSize * 4; i < n; i += 4) {
-        //   myData[i] = settings.imageData['_'+thisSize].data[i] += 5;
-        //   myData[i+1] = settings.imageData['_'+thisSize].data[i+2] += 5;
-        //   myData[i+2] = settings.imageData['_'+thisSize].data[i+3] += 5;
-        //   myData[i+3] = settings.imageData['_'+thisSize].data[i+3] += 5;
-        // }
 
         //ctx.drawImage(imageObj, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, 16, 16);
 
@@ -190,11 +187,27 @@ function updateCanvas(thisSize){
 
 ctx.putImageData(myData, 0, 0);
 var imgData = can.toDataURL();
-//console.log(imgData);
-//console.log(myData[1000],settings.imageData['_'+thisSize].data[1000]);
 imageObj.src = imgData;
-//console.log(imageObj,settings);
+   //   ctx.drawImage(img, 0, 0, thisSize, thisSize, 0, 0, 32, 32);
 
+//ctx.putImageData(imageData, 0, 0)
+
+
+
+
+     var imagedata = ctx.getImageData(0, 0, thisSize,thisSize);
+ 
+     var canvaspixelarray = imagedata.data;
+ 
+     var canvaspixellen = canvaspixelarray.length;
+     var bytearray = new Uint8Array(canvaspixellen);
+ 
+     for (var i=0;i<canvaspixellen;++i) {
+          bytearray[i] = canvaspixelarray[i];
+     }
+
+     settings.saved = bytearray;
+     console.log(bytearray);
  }; 
 
 
@@ -274,7 +287,7 @@ imageObj.src = imgData;
 
         settings.imageObj = imageObj;
 
-        dataArray = settings.imageData._288;
+        dataArray = settings.imageData._32;
 
         
       };

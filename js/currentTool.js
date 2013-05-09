@@ -185,5 +185,5 @@ function useCurrentTool(target){
 
     };
   };
-  updateCanvas(288);
+  updateCanvas(32);
 };

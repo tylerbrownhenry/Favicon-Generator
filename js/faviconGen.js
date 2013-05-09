@@ -89,90 +89,27 @@ settings.useTool = (function(c){
 settings.tool = true;
 
 $('.brushSize').change(function() {
-        var changeSize = (settings.brush.size * settings.pixelSize)+'px';
+
+    var changeSize = (settings.brush.size * settings.pixelSize)+'px';
   settings.brush.changeSize(parseInt($(this).val()),changeSize);
 
-
 });
+
 $('.darkenAmount').change(function() {
   // settings.brush.darkenAmount(1);
 });
 
 
 
-function cvtRGBtoHex(color){
-    if(color.indexOf('rgb') !== -1){
-        var tempColor = color.substring((color.indexOf('(')+1),color.indexOf(')')).split(',');
-        var color = '';
-        for(i=0;i !== 3; i ++){
-           tempColor[i] = (parseInt(tempColor[i])).toString(16);
-            
-            if(tempColor[i].length == 1){ 
-                tempColor[i] = '0' + tempColor[i];
-            };
-           color += ''+tempColor[i];
-        };  
-    };
-    return color;
-};
+
 
 //#-------->
-function intersects(x, y, cx, cy, r) {
-    var dx = x-cx
-    var dy = y-cy
-    return dx*dx+dy*dy <= r*r //true/false
-   // return dx*dx+dy*dy+'|'+r*r; // gives the numbers compared
-    //can find some 'fuzzy' math to round the corners?
-}
+
 //#-------->
 
 
 
 
-
-//#-------------> darken / lighten colors
-var convertNum = (function(color){
-    
-    //settings.brush.darken.que++
- //console.log(settings.brush.darken.que,'que');
-        
-    //console.log(color,'line74',color.indexOf('#'));
-    if(color.indexOf('#') !== -1){
-        color = color.substring(1,color.length);
-    };
-   // console.log(color,'line78');
-    
-    var change = settings.darken;
-    color = cvtRGBtoHex(color);
-                  
-    var color = color.split("");
-    darkenColor = new Array();
-   // console.log('color converted',color);
-    
-    for(var i=5; color.length > 1;i--){
-        ////num = (parseInt(color.shift(),16)*16)+(parseInt(color.shift(),16));
-        var num = '';
-        var num = ((parseInt(color.shift(),16)*16)+(parseInt(color.shift(),16)) - change).toString(16);  
-       // (num - change).toString(16)
-      //  console.log(num,'line86');
-      //  console.log(num,parseInt(num).toString(16),num.length,'line87');
-   if(num.indexOf('-') !== -1){
-        num = '00';
-      // console.log('zeroooo');
-    }; 
-        
-        num = (num.length == 1)? 0 + num : num;
-        //num = (num.toString(16))? '00' : num;
-        //brush = {size:6,shape:'square'};
-       // var test =  num.toString(16)
-       // num = (!isNaN(test))? '00' : num;
-      //  console.log(num,num.toString(16),num.length,'line90');
-        darkenColor.push(num);
-    };
-   // console.log(darkenColor,'line93',settings.brush.darken.que);
-    //settings.brush.darken.que = 0;
-    return "#"+darkenColor.join('');
-}).memoize();
 
 //#--------------------->
 
@@ -191,10 +128,8 @@ function createDivs(){
     };
     
     $('.e').html('<div id="cursor" class="circle"></div>'+appendToDivs);
+
 };
-
-
-
 
 createDivs();
 

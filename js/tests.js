@@ -59,11 +59,6 @@ settings.changeColor = (function(c){
     return settings.color;    
 });
 
-// settings.brush.darkenAmount = (function(n){
-//     settings.darken = n * settings.brush.darken.que;
-//     return settings.darken;    
-// });
-
 
 function averageOfColors(color1,color1){
 

@@ -1,5 +1,3 @@
-//#-------------->
-
 settings = {
   test: '',
   offSet:60,
@@ -9,14 +7,14 @@ settings = {
   			addedOffSet: 10
   },
   saved:{
-288:'',
-144:'',
-114:'',
-72:'',
-57:'',
-32:'',
-16:''
-  },
+        288:'',
+        144:'',
+        114:'',
+        72:'',
+        57:'',
+        32:'',
+        16:''
+        },
   pixelSize:16,
   imageData :{},
   darken:6,
@@ -49,11 +47,51 @@ settings = {
           }
 };
 
+
+
+
+
+
+
 $('canvas').click(function (){
 
   settings.canvas.changeSize($(this).attr('sz'));
 
 });
+
+
+
+
+
+
+
+
+settings.changeColor = (function(c){
+
+  settings.color = c;
+  return settings.color;    
+
+});
+
+settings.useTool = (function(c){
+
+  if(settings.tool === 'eyedropper'){
+
+    eyeDropThis(target);
+
+  } else {
+
+    useCurrentTool();
+
+  };
+
+});
+
+
+
+
+
+
 
 settings.canvas.changeSize = function(size){
 
@@ -85,9 +123,14 @@ settings.canvas.changeSize = function(size){
 	  break;
 	};
 
-  setupDrawingArea(settings.imageData['_'+size].data);
+setupDrawingArea(settings.imageData['_'+size].data);
 
 };
+
+
+
+
+
 
 settings.brush.changeSize = function(size){
     // We can add an if statment and make the function check each time if the 
@@ -96,7 +139,6 @@ settings.brush.changeSize = function(size){
     settings.brush.size = size;
 
     var day=new Date().getDay();
-
 
     $('#cursor').setBorderRadius(size * settings.pixelSize);
     
@@ -120,24 +162,7 @@ settings.brush.changeSize = function(size){
 
 
 
-function brushDabRadius(x, y, cx, cy, r, returnVal) {
 
-    var dx = x-cx
-    var dy = y-cy
-
-    if(typeof returnVal == 'undefined'){
-
-      return dx*dx+dy*dy <= r*r //true/false   
-
-    } else {
-
-      return dx*dx+dy*dy;
-
-    }
-
-// return dx*dx+dy*dy+'|'+r*r; // gives the numbers compared
-//can find some 'fuzzy' math to round the corners?
-};
 
 
 function useCurrentTool(target){
@@ -162,6 +187,10 @@ function useCurrentTool(target){
     };
         
 //#------------> Drawing Tools
+//
+
+  var changingArray = [];
+
   for(var e=coord.maxY;e < coord.minY + 1; e++){
     for(var i=coord.maxX;i < coord.minX + 1; i++){
 
@@ -192,8 +221,7 @@ function useCurrentTool(target){
         if((settings.tool === 'pencil') || (settings.tool === 'pen')){    
 
           pixel.css('backgroundColor',settings.color);
-          //Maybe make this loop through all of the canvas?
-          updateCanvas(32,e,i,settings.color);
+          changingArray.push({x:e,y:i});
 
         };
       };
@@ -201,4 +229,49 @@ function useCurrentTool(target){
     };
   };
 
+  updateCanvas(32,changingArray,settings.color);
+
 };
+
+
+
+
+
+
+
+
+function updateCanvas(thisSize,pixels,color){
+
+      var ctx = settings['context'+thisSize];
+      var myData = ctx.getImageData(0,0,thisSize,thisSize);
+      var newColor = convertToArray(color);
+
+      for (var i = 0; i < pixels.length; i++) {
+
+        var thisPixel = parseInt((((pixels[i].x -1) * thisSize) + (pixels[i].y-1)) * 4);
+
+        myData.data[thisPixel] = parseInt(newColor[0],16);
+        myData.data[thisPixel+1] = parseInt(newColor[1],16);
+        myData.data[thisPixel+2] = parseInt(newColor[2],16);
+        myData.data[thisPixel+3] = 255; // NO ALPHA FOR NOW
+      
+      };
+
+      ctx.putImageData(myData, 0, 0);
+
+    //Caches the Array so that can use it later.
+
+    var imageData = ctx.getImageData(0, 0, thisSize,thisSize);
+    var canvasPixelArray = imageData.data;
+    var canvasPixellen = canvasPixelArray.length;
+    var byteArray = new Uint32Array(canvasPixellen);
+
+    for (var i = 0 ; i < canvasPixellen; ++i) {
+
+        byteArray[i] = canvasPixelArray[i];
+
+    };
+
+     settings.saved[thisSize] = byteArray;
+
+ }; 

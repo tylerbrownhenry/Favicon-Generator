@@ -52,37 +52,15 @@ jQuery.fn.setBorderRadius = function(size) {
 
 };
 
-
-
+settings.brush.changeSize($('.brushSize').val());
 
 //#--------------->
 
 
-settings.changeColor = (function(c){
-
-  settings.color = c;
-  return settings.color;    
-
-});
-
-settings.useTool = (function(c){
-
-  if(settings.tool === 'eyedropper'){
-
-    eyeDropThis(target);
-
-  } else {
-
-    useCurrentTool();
-
-  };
-
-});
-
-settings.brush.changeSize($('.brushSize').val());
 
 
-function cvtRGBtoHex(color,newDepth){
+
+var cvtRGBtoHex = (function (color){
 
     if(color.indexOf('rgb') !== -1){
 
@@ -107,7 +85,7 @@ function cvtRGBtoHex(color,newDepth){
 
     return color;
 
-};
+}).memoize();
 
 //#-------->
 
@@ -193,23 +171,88 @@ $('#eyedropper').click(function(){
 
 $("body").mousemove(function(e) {
 
-    settings.X = parseInt(Math.ceil((e.pageX - $('.jcrop-holder').offset().left)/settings.pixelSize));
-    settings.Y = parseInt(Math.ceil((e.pageY - $('.jcrop-holder').offset().top)/settings.pixelSize));
-    
-    settings.hoverCursorX = ((settings.X * settings.pixelSize) - settings.offSet )+'px';
-    settings.hoverCursorY = ((settings.Y * settings.pixelSize) - settings.offSet )+'px';
+  if($('.jcrop-holder').offset()){
 
-    $('#cursor').stop(true,true).animate({left:settings.hoverCursorX,top:settings.hoverCursorY},500);
+      settings.X = parseInt(Math.ceil((e.pageX - $('.jcrop-holder').offset().left)/settings.pixelSize));
+      settings.Y = parseInt(Math.ceil((e.pageY - $('.jcrop-holder').offset().top)/settings.pixelSize));
+      
+      settings.hoverCursorX = ((settings.X * settings.pixelSize) - settings.offSet )+'px';
+      settings.hoverCursorY = ((settings.Y * settings.pixelSize) - settings.offSet )+'px';
+
+      $('#cursor').stop(true,true).animate({left:settings.hoverCursorX,top:settings.hoverCursorY},500);
+
+  };
 
 });
 
 
 
 
+var cleanColorInput = (function (color){
+
+    if(color.indexOf('#') !== -1){
+       var color = color.substring(1,color.length); /// #ffffff ====> ffffff
+    };
+
+    var color = cvtRGBtoHex(color); ///rgb('255,255,255') ====> ffffff
+    var color = color.split("");
+
+    return color;
+
+}).memoize();
 
 
+var convertToArray = (function (color){
+
+    newColor = new Array();
+
+    var color = cleanColorInput(color);
+    var change = 0; // Was darken variable.
+    
+    for(var i=5; color.length > 1;i--){
+      
+      var num = '';
+
+      //Darken will be added here... as 'change';
+      num = ((parseInt(color.shift(),16)*16)+(parseInt(color.shift(),16)) - change);
+      
+      num = num.toString(16);
+
+      if(num.indexOf('-') !== -1){
+
+          num = '00';
+
+      }; 
+          
+      num = (num.length == 1)? 0 + num : num;
+
+      newColor.push(num);
+
+    };
+
+    return newColor;
+
+}).memoize();
 
 
+var convertNum = (function convertNum(brushColor){
+
+    var color = cleanColorInput(brushColor);
+
+    var darkenColor = convertToArray(color);
+
+    return "#"+darkenColor.join('');
+
+}).memoize();
+
+
+var brushDabRadius = (function (x, y, cx, cy, r) {
+    var dx = x-cx
+    var dy = y-cy
+    return dx*dx+dy*dy <= r*r //true/false
+   // return dx*dx+dy*dy+'|'+r*r; // gives the numbers compared
+    //can find some 'fuzzy' math to round the corners?
+}).memoize();
 
 
 //EXILED FOR NOW
@@ -274,61 +317,7 @@ $("body").mousemove(function(e) {
 
 //#-------->
 
-function cleanColorInput(color){
 
-    if(color.indexOf('#') !== -1){
-       var color = color.substring(1,color.length); /// #ffffff ====> ffffff
-    };
-
-    var color = cvtRGBtoHex(color); ///rgb('255,255,255') ====> ffffff
-    var color = color.split("");
-
-    return color;
-};
-
-
-var convertToArray = (function (color){
-
-    newColor = new Array();
-
-    var color = cleanColorInput(color);
-    var change = 0; // Was darken variable.
-    
-    for(var i=5; color.length > 1;i--){
-      
-      var num = '';
-
-      //Darken will be added here... as 'change';
-      num = ((parseInt(color.shift(),16)*16)+(parseInt(color.shift(),16)) - change);
-      
-      num = num.toString(16);
-
-      if(num.indexOf('-') !== -1){
-
-          num = '00';
-
-      }; 
-          
-      num = (num.length == 1)? 0 + num : num;
-
-      newColor.push(num);
-
-    };
-
-    return newColor;
-
-});
-
-
-var convertNum = (function convertNum(brushColor){
-
-    var color = cleanColorInput(brushColor);
-
-    var darkenColor = convertToArray(color);
-
-    return "#"+darkenColor.join('');
-
-}).memoize();
 
 
 

@@ -123,59 +123,6 @@ $(function() {
 });
 
 
-function updateCanvas(thisSize,x,y,color){
-
-
-      var can = document.getElementById('myCanvas'+thisSize);
-      var ctx = can.getContext('2d');
-      var img = ctx.createImageData(thisSize, thisSize);
-      var myData = ctx.getImageData(0,0,thisSize,thisSize);
-
-      // if(settings.saved[thisSize].length > 1){
-      //     for(var i = 0, n = thisSize * thisSize * 4; i < n; i += 4) {
-
-      //       myData.data[i] = settings.saved[thisSize][i]+5;
-      //       myData.data[i+1] = settings.saved[thisSize][i+1]+5;
-      //       myData.data[i+2] = settings.saved[thisSize][i+2]+5;
-      //       myData.data[i+3] = settings.saved[thisSize][i+3]+5;
-
-      //     }
-      // };
-      // 
-      // 
-      var newColor = convertToArray(color);
-
-      thisPixel = parseInt((((x-1) * thisSize) + (y-1)) * 4);
-
-      myData.data[thisPixel] = settings.saved[thisSize][thisPixel] = parseInt(newColor[0],16);
-      myData.data[thisPixel+1] = settings.saved[thisSize][thisPixel+1] = parseInt(newColor[1],16);
-      myData.data[thisPixel+2] = settings.saved[thisSize][thisPixel+2] = parseInt(newColor[2],16);
-      myData.data[thisPixel+3] = settings.saved[thisSize][thisPixel+3] = 255; // NO ALPHA FOR NOW
-
-    ctx.putImageData(myData, 0, 0);
-
-//Caches the Array so that can use it later.
-
-    var imageData = ctx.getImageData(0, 0, thisSize,thisSize);
-    var canvasPixelArray = imageData.data;
-    var canvasPixellen = canvasPixelArray.length;
-    var byteArray = new Uint32Array(canvasPixellen);
-
-    for (var i = 0 ; i < canvasPixellen; ++i) {
-
-        byteArray[i] = canvasPixelArray[i];
-
-    };
-
-     settings.saved[thisSize] = byteArray;
-
- }; 
-
-
-
-
-
-
 
 
       function drawThisImage(){
@@ -253,19 +200,19 @@ function updateCanvas(thisSize,x,y,color){
       };
 
 function setupDrawingArea(data){
-console.log(data,data.length,settings.canvas.size);
+
     appendToDivs = '';
     
-    for(var i=0,c=1,r=1,e=1;e < data.length * 4;e+=4){
+    for(var i=0,c=1,r=1,e=1,sZ = settings.canvas.pixelSize,len=data.length,rowLen = (parseInt(settings.canvas.size) + 1);e < len * 4;e+=4){
        
-        if(c == parseInt(settings.canvas.size) + 1){
+        if(c == rowLen) {
 
             c=1;
             r++
 
         };
 
-        appendToDivs += '<div x='+c+' y='+r+' class="pixel" style="background: rgba('+data[i++]+', '+data[i++]+', '+data[i++]+', '+data[i++]+');  width:'+settings.canvas.pixelSize+'px; height:'+settings.canvas.pixelSize+'px" ></div>';
+        appendToDivs += '<div x='+c+' y='+r+' class="pixel" style="background: rgba('+data[i++]+', '+data[i++]+', '+data[i++]+', '+data[i++]+');  width:'+sZ+'px; height:'+sZ+'px" ></div>';
         c++
 
     };

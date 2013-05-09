@@ -37,18 +37,18 @@ if ( !Array.prototype.forEach ) {
 
 jQuery.fn.setBorderRadius = function(size) {
 
-    var rSize = size;
+  var rSize = size;
 
-    if(settings.brush.shape === 'square'){ rSize = 0};
-        var borderRadiusObj = {
+  if(settings.brush.shape === 'square'){ rSize = 0};
+    var borderRadiusObj = {
 
-            '-moz-border-radius': rSize+'px',
-            '-webkit-border-radius': rSize+'px',
-            'border-radius': rSize+'px'
+      '-moz-border-radius': rSize+'px',
+      '-webkit-border-radius': rSize+'px',
+      'border-radius': rSize+'px'
 
-        };
+  };
 
-    return (this).css(borderRadiusObj).css('width',size).css('height',size);
+  return (this).css(borderRadiusObj).css('width',size).css('height',size);
 
 };
 
@@ -60,22 +60,22 @@ jQuery.fn.setBorderRadius = function(size) {
 
 settings.changeColor = (function(c){
 
-    settings.color = c;
-    return settings.color;    
+  settings.color = c;
+  return settings.color;    
 
 });
 
 settings.useTool = (function(c){
 
-    if(settings.tool === 'eyedropper'){
+  if(settings.tool === 'eyedropper'){
 
-        eyeDropThis(target);
+    eyeDropThis(target);
 
-    } else {
+  } else {
 
-        useCurrentTool();
+    useCurrentTool();
 
-    };
+  };
 
 });
 
@@ -287,11 +287,11 @@ function cleanColorInput(color){
 };
 
 
-var convertNum = (function convertNum(brushColor){
+var convertToArray = (function (color){
 
-    var color = cleanColorInput(brushColor);
+    newColor = new Array();
 
-    darkenColor = new Array();
+    var color = cleanColorInput(color);
     var change = 0; // Was darken variable.
     
     for(var i=5; color.length > 1;i--){
@@ -311,9 +311,20 @@ var convertNum = (function convertNum(brushColor){
           
       num = (num.length == 1)? 0 + num : num;
 
-      darkenColor.push(num);
+      newColor.push(num);
 
     };
+
+    return newColor;
+
+});
+
+
+var convertNum = (function convertNum(brushColor){
+
+    var color = cleanColorInput(brushColor);
+
+    var darkenColor = convertToArray(color);
 
     return "#"+darkenColor.join('');
 

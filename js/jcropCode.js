@@ -151,63 +151,52 @@ $(function() {
 });
 
 
-function updateCanvas(thisSize){
+function updateCanvas(thisSize,x,y,color){
 
-     // var that = settings.imageData['_'+thisSize];
 
       var can = document.getElementById('myCanvas'+thisSize);
       var ctx = can.getContext('2d');
-      var img = ctx.createImageData(thisSize, thisSize); // width x height
-      // ctx.drawImage(img, 0, 0 );
+      var img = ctx.createImageData(thisSize, thisSize);
       var myData = ctx.getImageData(0,0,thisSize,thisSize);
 
+      // if(settings.saved[thisSize].length > 1){
+      //     for(var i = 0, n = thisSize * thisSize * 4; i < n; i += 4) {
 
-     // ctx.drawImage(imageObj, 0, 0, thisSize, thisSize, 0, 0, 288, 288);
+      //       myData.data[i] = settings.saved[thisSize][i]+5;
+      //       myData.data[i+1] = settings.saved[thisSize][i+1]+5;
+      //       myData.data[i+2] = settings.saved[thisSize][i+2]+5;
+      //       myData.data[i+3] = settings.saved[thisSize][i+3]+5;
 
-if(settings.saved){
-  console.log(myData.data[1000],settings.saved[1000]);
-    for(var i = 0, n = thisSize * thisSize * 4; i < n; i += 4) {
-      myData.data[i] += settings.saved[i] +5;
-      myData.data[i+1] += settings.saved[i+1] +5;
-      myData.data[i+2] += settings.saved[i+2] +5;
-      myData.data[i+3] += settings.saved[i+3] +5;
-    }
-  console.log(myData[1000],settings.saved[1000]);
-}
+      //     }
+      // };
+      // 
+      // 
+      var newColor = convertToArray(color);
 
+      thisPixel = parseInt((((x-1) * thisSize) + (y-1)) * 4);
 
+      myData.data[thisPixel] = settings.saved[thisSize][thisPixel] = parseInt(newColor[0],16);
+      myData.data[thisPixel+1] = settings.saved[thisSize][thisPixel+1] = parseInt(newColor[1],16);
+      myData.data[thisPixel+2] = settings.saved[thisSize][thisPixel+2] = parseInt(newColor[2],16);
+      myData.data[thisPixel+3] = settings.saved[thisSize][thisPixel+3] = 255; // NO ALPHA FOR NOW
 
+    ctx.putImageData(myData, 0, 0);
 
-        //ctx.drawImage(imageObj, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, 16, 16);
+//Caches the Array so that can use it later.
 
-    //  settings.imageData['_'+thisSize].data = that.data;
-      //ctx.putImageData(settings.imageData['_'+thisSize], 0, 0);
-    //  ctx.putImageData(settings.imageData['_'+thisSize], 0, 0);
-     // that = cxt.getImageData(0, 0, thisSize, thisSize);
+    var imageData = ctx.getImageData(0, 0, thisSize,thisSize);
+    var canvasPixelArray = imageData.data;
+    var canvasPixellen = canvasPixelArray.length;
+    var byteArray = new Uint8Array(canvasPixellen);
 
-ctx.putImageData(myData, 0, 0);
-var imgData = can.toDataURL();
-imageObj.src = imgData;
-   //   ctx.drawImage(img, 0, 0, thisSize, thisSize, 0, 0, 32, 32);
+    for (var i = 0 ; i < canvasPixellen; ++i) {
 
-//ctx.putImageData(imageData, 0, 0)
+        byteArray[i] = canvasPixelArray[i];
 
+    };
 
+     settings.saved[thisSize] = byteArray;
 
-
-     var imagedata = ctx.getImageData(0, 0, thisSize,thisSize);
- 
-     var canvaspixelarray = imagedata.data;
- 
-     var canvaspixellen = canvaspixelarray.length;
-     var bytearray = new Uint8Array(canvaspixellen);
- 
-     for (var i=0;i<canvaspixellen;++i) {
-          bytearray[i] = canvaspixelarray[i];
-     }
-
-     settings.saved = bytearray;
-     console.log(bytearray);
  }; 
 
 
@@ -220,6 +209,14 @@ imageObj.src = imgData;
       function drawThisImage(){
 
         // draw cropped image
+
+        // if(settings.test != 1){
+        //   settings.test = 1;
+        // } else {
+        //   return;
+        // };
+
+                console.log('rtertertert');
         var sourceX = settings.coords.x;
         var sourceY = settings.coords.y;
         var sourceWidth = settings.coords.w;

@@ -135,9 +135,9 @@ var convertNum = (function convertNum(color,currentColor,newDepth){
     if(typeof currentColor != 'undefined'){
 
       var lesser = cvtRGBtoHex(color,newDepth);
-      console.log('left off here');
+
     };
-            console.log(color,currentColor,newDepth);      
+ 
     var color = color.split("");
     darkenColor = new Array();
    // console.log('color converted',color);

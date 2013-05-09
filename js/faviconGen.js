@@ -220,20 +220,22 @@ function findSurroundingPixels(x,y,target){
         coord.maxY = parseInt(y+settings.brush.add);
         
         for (var key in coord) {
+
            var obj = coord[key];
            if(obj < 1){ coord[key] = 1;};
            if(obj > 32){ coord[key] = 32;};
+           
         };
         
 //#------------> Eye Dropper Tool
         if(settings.tool === 'eyedropper'){
+
             var pixel = $('.pixel[x='+x+'][y='+y+']');   
             settings.color = "#"+cvtRGBtoHex(pixel.css('backgroundColor')); 
             $('#eyedropper').css('backgroundColor',settings.color); 
             return;
+
         };
-         console.log(x,'x',y,'y',settings.brush.size,'bs',coord.maxX,'maxX',coord.maxY,'maxY',coord.minX,'minX',coord.minY,'minY'); 
-        
         
 //#------------> Pencil / Burn Tool  
     
@@ -241,7 +243,8 @@ function findSurroundingPixels(x,y,target){
             for(var i=coord.maxX;i < coord.minX + 1; i++){
                 
                 var pixel = $('.pixel[x='+i+'][y='+e+']'); 
-                var hitTest = intersects(i, e, x, y, (settings.brush.size/2))
+                var hitTest = intersects(i, e, x, y, (settings.brush.size/2));
+
                 if(settings.change === true){
            
                            var color = pixel.css('backgroundColor');               
@@ -250,8 +253,10 @@ function findSurroundingPixels(x,y,target){
                 };
                
                 if(settings.change === false){
-                    if((settings.tool === 'pencil') || (settings.tool === 'pen' && hitTest === true)){     
+                    if((settings.tool === 'pencil') || (settings.tool === 'pen' && hitTest === true)){ 
+
                        pixel.css('backgroundColor',settings.color); 
+
                     };
                 };
             };
@@ -269,12 +274,10 @@ settings.brush.changeSize = function(size,changeSize){
     
         $('#cursor').setBorderRadius(changeSize);
     
-    console.log(this);
         this.size = size;
         this.remove  = Math.floor(size/2); 
 
         var add = (settings.brush.shape == 'square')? -1 : 0; 
-        console.log(settings.brush.shape);
         this.add  = ((this.remove)*-1)+add;
     
 };

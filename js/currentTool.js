@@ -1,9 +1,19 @@
 //#-------------->
 
 settings = {
+  test: '',
   offSet:60,
   canvas:{  size: 32,
 			addedOffSet: 10
+  },
+  saved:{
+288:'',
+144:'',
+114:'',
+72:'',
+57:'',
+32:'',
+16:''
   },
   pixelSize:16,
   imageData :{},
@@ -177,13 +187,12 @@ function useCurrentTool(target){
 
           pixel.css('backgroundColor',settings.color);
           //Maybe make this loop through all of the canvas?
+          updateCanvas(32,e,i,settings.color);
 
         };
       };
 
-	drawThisImage();
-
     };
   };
-  updateCanvas(32);
+
 };

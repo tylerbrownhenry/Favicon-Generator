@@ -16,34 +16,6 @@ $(function() {
 
   dataArray = [];
 
-  function setupDrawingArea(data){
-
-    appendToDivs = '';
-    
-    for(i=0,c=1,r=1,e=1;e < data.length;e+=4){
-       
-        if(c == 33){
-
-            c=1;
-            r++
-
-        };
-
-        appendToDivs += '<div x='+c+' y='+r+' width="'+settings.canvas.size+'" height="'+settings.canvas.size+'"  class="pixel" style="background: rgba('+data[i++]+', '+data[i++]+', '+data[i++]+', '+data[i++]+'); "></div>';
-        c++
-
-    };
-    
-  $('.jcrop-holder').html('<div id="cursor" class="square"></div>'+appendToDivs);
-
-  $("#cursor").on("click", (function() {
-
-    settings.useTool(this);
-
-  }));
-
-}
-
   holder.ondragover = function () { this.className = 'hover'; return false; };
 
   holder.ondragend = function () { this.className = ''; return false; };
@@ -187,7 +159,7 @@ function updateCanvas(thisSize,x,y,color){
     var imageData = ctx.getImageData(0, 0, thisSize,thisSize);
     var canvasPixelArray = imageData.data;
     var canvasPixellen = canvasPixelArray.length;
-    var byteArray = new Uint8Array(canvasPixellen);
+    var byteArray = new Uint32Array(canvasPixellen);
 
     for (var i = 0 ; i < canvasPixellen; ++i) {
 
@@ -208,15 +180,6 @@ function updateCanvas(thisSize,x,y,color){
 
       function drawThisImage(){
 
-        // draw cropped image
-
-        // if(settings.test != 1){
-        //   settings.test = 1;
-        // } else {
-        //   return;
-        // };
-
-                console.log('rtertertert');
         var sourceX = settings.coords.x;
         var sourceY = settings.coords.y;
         var sourceWidth = settings.coords.w;
@@ -288,3 +251,31 @@ function updateCanvas(thisSize,x,y,color){
 
         
       };
+
+function setupDrawingArea(data){
+console.log(data,data.length,settings.canvas.size);
+    appendToDivs = '';
+    
+    for(var i=0,c=1,r=1,e=1;e < data.length * 4;e+=4){
+       
+        if(c == parseInt(settings.canvas.size) + 1){
+
+            c=1;
+            r++
+
+        };
+
+        appendToDivs += '<div x='+c+' y='+r+' class="pixel" style="background: rgba('+data[i++]+', '+data[i++]+', '+data[i++]+', '+data[i++]+');  width:'+settings.canvas.pixelSize+'px; height:'+settings.canvas.pixelSize+'px" ></div>';
+        c++
+
+    };
+    
+  $('.jcrop-holder').html('<div id="cursor" class="square"></div>'+appendToDivs);
+
+  $("#cursor").on("click", (function() {
+
+    settings.useTool(this);
+
+  }));
+
+};

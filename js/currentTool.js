@@ -3,8 +3,10 @@
 settings = {
   test: '',
   offSet:60,
-  canvas:{  size: 32,
-			addedOffSet: 10
+  canvas:{  
+        size: 32,
+        pixelSize: 16,
+  			addedOffSet: 10
   },
   saved:{
 288:'',
@@ -56,6 +58,7 @@ $('canvas').click(function (){
 settings.canvas.changeSize = function(size){
 
 	settings.canvas.size = size;
+  settings.canvas.pixelSize = 512 / parseInt(size);
 
 		switch (settings.canvas.size)
 	{
@@ -81,6 +84,9 @@ settings.canvas.changeSize = function(size){
 	  settings.canvas.addedOffSet = 10;
 	  break;
 	};
+
+  setupDrawingArea(settings.imageData['_'+size].data);
+
 };
 
 settings.brush.changeSize = function(size){

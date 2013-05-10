@@ -4,7 +4,9 @@ settings = {
   canvas:{  
         size: 32,
         pixelSize: 16,
-  			addedOffSet: 10
+  			addedOffSet: 10,
+        containerOffsetLeft: false,
+        containerOffsetTop: false
   },
   saved:{
         288:'',
@@ -50,18 +52,11 @@ settings = {
 
 
 
-
-
-
 $('canvas').click(function (){
 
   settings.canvas.changeSize($(this).attr('sz'));
 
 });
-
-
-
-
 
 
 
@@ -72,6 +67,9 @@ settings.changeColor = (function(c){
   return settings.color;    
 
 });
+
+
+
 
 settings.useTool = (function(c){
 
@@ -97,14 +95,18 @@ settings.canvas.changeSize = function(size){
 
 	settings.canvas.size = size;
   settings.canvas.pixelSize = 512 / parseInt(size);
+  settings.canvas.containerOffsetLeft = $('.jcrop-holder').offset().left;
+  settings.canvas.containerOffsetTop = $('.jcrop-holder').offset().top;
 
-		switch (settings.canvas.size)
+
+
+		switch (parseInt(settings.canvas.size))
 	{
 	case 16:
-	  settings.canvas.addedOffSet = 6;
+	  settings.canvas.addedOffSet = 97;
 	  break;
 	case 32:
-	  settings.canvas.addedOffSet = 10;
+	  settings.canvas.addedOffSet = 49;
 	  break;
 	case 57:
 	  settings.canvas.addedOffSet = 10;
@@ -124,7 +126,7 @@ settings.canvas.changeSize = function(size){
 	};
 
 setupDrawingArea(settings.imageData['_'+size].data);
-
+settings.brush.changeSize(settings.brush.size);
 };
 
 
@@ -138,7 +140,47 @@ settings.brush.changeSize = function(size){
     var size = parseInt(size);
     settings.brush.size = size;
 
+    $('#cursor').setBorderRadius(size * settings.canvas.pixelSize);
+    
+    if(settings.brush.shape === 'circle'){
+
+        var add = 0;
+
+            console.log(settings.canvas.size);
+            if(parseInt(settings.canvas.size) == 16){
+              var aLittleSpice = 13;
+            } else {
+             var  aLittleSpice = 2;
+            }
+            settings.offSet = ((size * settings.canvas.pixelSize)/2) + ((settings.canvas.size / 4)+aLittleSpice);
+ 
+
+       //perfect for 32
+       //  settings.offSet = ((size * settings.pixelSize)/2) + 113; // 113 (really close) 16size * 12brush
+              // settings.offSet = ((size * settings.pixelSize)/2) + 98; // 98 (really close) 16size * 10brush
+               //  settings.offSet = (settings.canvas.pixelSize / 2 * size);
+    } else {
+
+        var add = ((size % 2) === 1)? 0 : 1; // Even & Odd Numbers Need to be Treated Differently
+        settings.offSet = (size % 2 === 1)? (((size+1) * settings.canvas.pixelSize)/2) + 1 : ((size * settings.canvas.pixelSize)/2) + 1;
+        settings.offSet = (size === 1)? settings.addedOffSet : settings.offSet;
+
+    };
+
+    this.remove  = Math.floor(size/2); 
+    this.add  = ((this.remove)*-1)+add;
+    
+};
+
+
+settings.brush.changeSize2 = function(size){
+    // We can add an if statment and make the function check each time if the 
+    // tool has changed when we click it.
+    var size = parseInt(size);
+    settings.brush.size = size;
+
     var day=new Date().getDay();
+
 
     $('#cursor').setBorderRadius(size * settings.pixelSize);
     
@@ -159,9 +201,6 @@ settings.brush.changeSize = function(size){
     this.add  = ((this.remove)*-1)+add;
     
 };
-
-
-
 
 
 
@@ -196,20 +235,23 @@ function useCurrentTool(target){
 
       var blurLevel = 'notSet';
       var test = false;
-        
-      var pixel = $('.pixel[x='+i+'][y='+e+']'); 
+      var max = Math.max(e,i);
 
+      if( max > 32 || max < 1 ){
 
-      if(settings.tool !== 'pen'){
+          var hitTest = false;
 
-        var hitTest = true;
+      } else if(settings.tool !== 'pen'){
+
+          var hitTest = true;
 
       } else {
 
-        var hitTest = brushDabRadius(i, e, x, y, (settings.brush.size/2));
-        //blurLevel = ohButHowBlurry(i,e,x,y); To be continued...
+          var hitTest = brushDabRadius(i, e, x, y, (settings.brush.size/2));
 
       };
+
+        //blurLevel = ohButHowBlurry(i,e,x,y); To be continued...
 
       //To be continued...
       // if(settings.change === true && hitTest === true){
@@ -220,8 +262,8 @@ function useCurrentTool(target){
       if(settings.change === false && hitTest === true){
         if((settings.tool === 'pencil') || (settings.tool === 'pen')){    
 
-          pixel.css('backgroundColor',settings.color);
-          changingArray.push({x:e,y:i});
+         // $('.pixel[x='+i+'][y='+e+']').css('backgroundColor',settings.color);
+          changingArray.push({x:i,y:e});
 
         };
       };
@@ -229,7 +271,7 @@ function useCurrentTool(target){
     };
   };
 
-  updateCanvas(32,changingArray,settings.color);
+  updateCanvas(changingArray,settings.color);
 
 };
 
@@ -240,15 +282,18 @@ function useCurrentTool(target){
 
 
 
-function updateCanvas(thisSize,pixels,color){
+function updateCanvas(pixels,color){
 
+      var thisSize = settings.canvas.size;
       var ctx = settings['context'+thisSize];
       var myData = ctx.getImageData(0,0,thisSize,thisSize);
       var newColor = convertToArray(color);
 
       for (var i = 0; i < pixels.length; i++) {
 
-        var thisPixel = parseInt((((pixels[i].x -1) * thisSize) + (pixels[i].y-1)) * 4);
+        $('.pixel[x='+pixels[i].x+'][y='+pixels[i].y+']').css('backgroundColor',settings.color);
+
+        var thisPixel = parseInt((((pixels[i].y -1) * thisSize) + (pixels[i].x-1)) * 4);
 
         myData.data[thisPixel] = parseInt(newColor[0],16);
         myData.data[thisPixel+1] = parseInt(newColor[1],16);

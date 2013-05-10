@@ -297,11 +297,12 @@ canvas:hover {
 <div class="e" style="width:512px; height:512px"></div>
 
 <span class="console"></span>
-<div class="btn tool" id="darken"></div>
-<div class="btn tool" id="pencil"></div>
-<div class="btn color" id="#23ffff"></div>
-<div class="btn" id="eyedropper"></div>
-<div class="btn tool" id="pen"></div>
+<div class="btn tool" id="darken">Darken</div>
+<div class="btn tool" id="pencil">Pencil</div>
+<div class="btn color" id="#23ffff">Static Color</div>
+
+<div class="btn" id="eyedropper">Eye Dropper</div>
+<div class="btn tool" id="pen">Pen</div>
 <!-- http://refreshless.com/nouislider/ -->
 
 <select class="hardness" value='55'>
@@ -318,8 +319,8 @@ canvas:hover {
 	<option value="0">0</option>
 </select>
 
-
-<select class="brushSize" value='55'>
+<div class="brushSize2">dsd</div>
+<select class="brushSize2" value='55'>
     <option value="6">6</option>
   <option value="1">1</option>
   <option value="2">2</option>
@@ -380,15 +381,7 @@ canvas:hover {
 
 <!-- Color Picker Code -->
 <script src="../js/colorPicker.js"></script>
-<script type="text/javascript">
 
-jQuery(document).ready(function() {
-
-$('.colorChoose').colorPicker('.colorChoose');
-
-});
-
-</script>
 
  
 <!-- Javascript Testing Code -->
@@ -396,12 +389,36 @@ $('.colorChoose').colorPicker('.colorChoose');
   <div id="qunit" ></div>
   <div id="qunit-fixture"></div>
 
-<link rel="stylesheet" href="http://code.jquery.com/qunit/git/qunit.css" type="text/css" media="screen" /> 
+<!-- <link rel="stylesheet" href="http://code.jquery.com/qunit/git/qunit.css" type="text/css" media="screen" /> 
 
-<script src="http://code.jquery.com/qunit/git/qunit.js"></script>
+<script src="http://code.jquery.com/qunit/git/qunit.js"></script> -->
 <script type="text/javascript" src="../js/currentTool.js"></script>
 <script type="text/javascript" src="../js/tests2.js"></script>
-<script type="text/javascript" src="../js/tests_assertions.js"></script>
+<!-- <script type="text/javascript" src="../js/tests_assertions.js"></script> -->
 <script type='text/javascript' src="../js/jcropCode.js"></script>
-</body>
-</html>
+<!-- Thanks !: http://refreshless.com/nouislider/ -->
+<script type="text/javascript" src="../js/sliders.js"></script>
+
+<script type="text/javascript">
+
+jQuery(document).ready(function() {
+
+$('.colorChoose').colorPicker('.colorChoose');
+
+
+
+
+
+$(".brushSize2").noUiSlider({
+    range: [0, 100]
+   ,start: 50
+   ,handles: 1
+   ,connect: "lower"
+});
+
+
+
+
+});
+
+</script>

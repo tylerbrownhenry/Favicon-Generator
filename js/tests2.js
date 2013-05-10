@@ -171,17 +171,30 @@ $('#eyedropper').click(function(){
 
 $("body").mousemove(function(e) {
 
-  if($('.jcrop-holder').offset()){
+  if(settings.canvas.containerOffsetLeft !== false){
 
-      settings.X = parseInt(Math.ceil((e.pageX - $('.jcrop-holder').offset().left)/settings.pixelSize));
-      settings.Y = parseInt(Math.ceil((e.pageY - $('.jcrop-holder').offset().top)/settings.pixelSize));
+      settings.X = Math.ceil((e.pageX - settings.canvas.containerOffsetLeft)/settings.canvas.pixelSize);
+      settings.Y = Math.ceil((e.pageY - settings.canvas.containerOffsetTop)/settings.canvas.pixelSize);
       
-      settings.hoverCursorX = ((settings.X * settings.pixelSize) - settings.offSet )+'px';
-      settings.hoverCursorY = ((settings.Y * settings.pixelSize) - settings.offSet )+'px';
+      settings.hoverCursorX = ((settings.X * settings.canvas.pixelSize) - settings.offSet )+'px';
+      settings.hoverCursorY = ((settings.Y * settings.canvas.pixelSize) - settings.offSet )+'px';
 
-      $('#cursor').stop(true,true).animate({left:settings.hoverCursorX,top:settings.hoverCursorY},500);
+      $('#cursor').css('left',settings.hoverCursorX).css('top',settings.hoverCursorY);
 
   };
+
+});
+
+
+$("body2").mousemove(function(e) {
+
+    settings.X = parseInt(Math.ceil((e.pageX - $('.jcrop-holder').offset().left)/settings.pixelSize));
+    settings.Y = parseInt(Math.ceil((e.pageY - $('.jcrop-holder').offset().top)/settings.pixelSize));
+    
+    settings.hoverCursorX = ((settings.X * settings.pixelSize) - settings.offSet )+'px';
+    settings.hoverCursorY = ((settings.Y * settings.pixelSize) - settings.offSet )+'px';
+
+    $('#cursor').stop(true,true).animate({left:settings.hoverCursorX,top:settings.hoverCursorY},500);
 
 });
 
@@ -252,7 +265,7 @@ var brushDabRadius = (function (x, y, cx, cy, r) {
     return dx*dx+dy*dy <= r*r //true/false
    // return dx*dx+dy*dy+'|'+r*r; // gives the numbers compared
     //can find some 'fuzzy' math to round the corners?
-}).memoize();
+});
 
 
 //EXILED FOR NOW

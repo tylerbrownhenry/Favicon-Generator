@@ -61,6 +61,9 @@ $(function() {
                   $('.jcrop-holder').css('width',512).css('height',512).children().not('#preview-pane').fadeOut(1000);
                   $('#preview-pane').animate({right:'-65'},1000);
                   setupDrawingArea(dataArray.data);
+                  settings.canvas.containerOffsetLeft = $('.jcrop-holder').offset().left;
+                  settings.canvas.containerOffsetTop = $('.jcrop-holder').offset().top;
+                  settings.canvas.changeSize(32);
 
                 });
       });
@@ -200,6 +203,12 @@ $(function() {
       };
 
 function setupDrawingArea(data){
+
+  if(settings.saved[settings.canvas.size].length > 1){
+    
+    var data = settings.saved[settings.canvas.size];
+  
+  };
 
     appendToDivs = '';
     

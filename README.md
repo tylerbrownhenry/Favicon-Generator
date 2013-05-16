@@ -1,4 +1,4 @@
-GUnit_New_UI
+Favicon Generator
 ============
 
-GUnit Testing with a little added UI
+Currently uses jCrop, jQuery, and some custom javascript to create and edit favicons and other icons needed for a standard website built today.
